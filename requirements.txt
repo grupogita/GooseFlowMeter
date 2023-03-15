@@ -1,0 +1,5 @@
+numpy==1.19.5
+scipy==1.6.0
+scapy==2.4.5
+pyasn1==0.4.8
+requests
