@@ -7,7 +7,7 @@ from .features.context.packet_direction import PacketDirection
 from .features.context.packet_flow_key import get_packet_flow_key
 from .flow import Flow
 
-EXPIRED_UPDATE = 10 # seconds
+EXPIRED_UPDATE = 10 #seconds
 MACHINE_LEARNING_API = "http://localhost:8000/predict"
 GARBAGE_COLLECT_PACKETS = 100
 
@@ -82,7 +82,7 @@ class FlowSession(DefaultSession):
                 GARBAGE_COLLECT_PACKETS = 10000
 
             if self.packets_count % GARBAGE_COLLECT_PACKETS == 0 or (
-                flow.duration > 120 and self.output_mode == "flow"
+                flow.duration > 65 and self.output_mode == "flow"
             ):
                 self.garbage_collect(packet.time)
 
@@ -100,7 +100,7 @@ class FlowSession(DefaultSession):
             if (
                 latest_time is None
                 or latest_time - flow.latest_timestamp > EXPIRED_UPDATE
-                or flow.duration > 90
+                or flow.duration > 65
             ):
                 data = flow.get_data()
 

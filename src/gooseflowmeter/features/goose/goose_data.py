@@ -98,6 +98,7 @@ def goose_pdu_decode(encoded_data):
         )
         return decoded_data
     except Exception:
+        print("GOOSE malformed")
         return None
 
 def get_goose_data(packet):
