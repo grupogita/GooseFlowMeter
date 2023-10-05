@@ -1,6 +1,7 @@
 README.md
 setup.cfg
 setup.py
+src/gooseflowmeter/Classifier.py
 src/gooseflowmeter/__init__.py
 src/gooseflowmeter/constants.py
 src/gooseflowmeter/flow.py

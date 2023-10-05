@@ -3,9 +3,13 @@ from collections import defaultdict
 
 from scapy.sessions import DefaultSession
 
+from .Classifier import ClassifierML
+
 from .features.context.packet_direction import PacketDirection
 from .features.context.packet_flow_key import get_packet_flow_key
 from .flow import Flow
+
+import pickle
 
 EXPIRED_UPDATE = 10 #seconds
 MACHINE_LEARNING_API = "http://localhost:8000/predict"
@@ -16,6 +20,9 @@ class FlowSession(DefaultSession):
     """Creates a list of network flows."""
 
     def __init__(self, *args, **kwargs):
+
+        self.ml_classifier = ClassifierML()
+
         self.flows = {}
         self.csv_line = 0
 
@@ -94,6 +101,7 @@ class FlowSession(DefaultSession):
         if not self.url_model:
             print("Garbage Collection Began. Flows = {}".format(len(self.flows)))
         keys = list(self.flows.keys())
+        
         for k in keys:
             flow = self.flows.get(k)
 
@@ -103,6 +111,12 @@ class FlowSession(DefaultSession):
                 or flow.duration > 65
             ):
                 data = flow.get_data()
+                #print(data)
+                # ML clean data
+                clean_data = self.ml_classifier.CleanData(data)
+
+                # Classify flow
+                traffic_class = self.ml_classifier.MLClassify(clean_data)
 
                 if self.csv_line == 0:
                     self.csv_writer.writerow(data.keys())
@@ -111,6 +125,8 @@ class FlowSession(DefaultSession):
                 self.csv_line += 1
 
                 del self.flows[k]
+                
+        self.ml_classifier.PrintResults()
         if not self.url_model:
             print("Garbage Collection Finished. Flows = {}".format(len(self.flows)))
 
